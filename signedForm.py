@@ -25,7 +25,6 @@ def checkIn():
     for account in accounts:
         # 打开登录窗口
         chrome_options = Options()
-        # 设置chrome浏览器无界面模式
         chrome_options.add_argument('--headless')
         driver = webdriver.Chrome(options=chrome_options)
         driver.get("https://stuhealth.jnu.edu.cn/#/login")

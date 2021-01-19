@@ -1,13 +1,16 @@
+from email.header import Header
+from email.mime.text import MIMEText
 from time import sleep
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.select import Select
 from apscheduler.schedulers.blocking import BlockingScheduler
+import smtplib
 import json
 
 # #添加账户信息
 # def addAccount():
-#     accounts = [{"userId": "xxx", "password": "xxx","province":"广东省","city":"东莞市","street":"请选择"}]
+#     accounts = [{"userId": "xxx", "password": "xxx","province":"广东省","city":"东莞市","street":"请选择","email":"xxx@hotmail.com"}]
 #     with open("accounts.json", mode='w') as load_f:
 #         json.dump(accounts, load_f, sort_keys=True, indent=2)
 # addAccount()
@@ -17,8 +20,22 @@ with open("accounts.json") as load_f:
     accounts = json.load(load_f)
 
 #发送邮件通知
-def sendEmailInfo():
-    pass
+sender = "xxx@qq.com"
+def sendEmailInfo(receiver):
+    qqCode = 'opabkobjzcaobfje'  # 授权码（这个要填自己获取到的）
+    smtp_server = 'smtp.qq.com'
+    smtp_port = 465
+    stmp = smtplib.SMTP_SSL(smtp_server, smtp_port)
+    stmp.login(sender, qqCode)
+    message = MIMEText('今天疫情打卡已成功', 'plain', 'utf-8')
+    message['From'] = Header("Eason", 'utf-8')
+    message['To'] = Header("Anyone", 'utf-8')
+    message['Subject'] = Header('健康问卷打卡', 'utf-8')
+    try:
+        stmp.sendmail(sender, receiver, message.as_string())
+        print ("邮件发送成功")
+    except smtplib.SMTPException:
+        print ("Error: 无法发送邮件")
 
 #定时任务
 scheduler = BlockingScheduler()
@@ -42,7 +59,8 @@ def checkIn():
         sleep(1)
         if driver.current_url == "https://stuhealth.jnu.edu.cn/#/index/complete":
             print("登记完成")
-            sendEmailInfo()
+            sendEmailInfo(account['email'])
+            driver.quit()
             return
         else:
             # 填写问卷

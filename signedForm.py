@@ -7,7 +7,7 @@ import json
 
 # #添加账户信息
 # def addAccount():
-#     accounts = [{"userId": "202034261024", "password": "Lovecs456","province":"广东省","city":"东莞市","street":"请选择"}]
+#     accounts = [{"userId": "xxx", "password": "xxx","province":"广东省","city":"东莞市","street":"请选择"}]
 #     with open("accounts.json", mode='w') as load_f:
 #         json.dump(accounts, load_f, sort_keys=True, indent=2)
 # addAccount()

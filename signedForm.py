@@ -20,9 +20,9 @@ with open("accounts.json") as load_f:
     accounts = json.load(load_f)
 
 #发送邮件通知
-sender = "xxx@qq.com"
+sender = "947115926@qq.com"
 def sendEmailInfo(receiver):
-    qqCode = 'xxx'
+    qqCode = 'opabkobjzcaobfje'
     smtp_server = 'smtp.qq.com'
     smtp_port = 465
     stmp = smtplib.SMTP_SSL(smtp_server, smtp_port)
@@ -41,7 +41,7 @@ def sendEmailInfo(receiver):
 scheduler = BlockingScheduler()
 
 #逐个打卡
-@scheduler.scheduled_job('cron',day_of_week='*', hour=14, minute='00')
+@scheduler.scheduled_job('cron',day_of_week='*', hour=9, minute='00')
 def check():
     print("今日开始打卡")
     for account in accounts:

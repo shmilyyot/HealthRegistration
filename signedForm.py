@@ -33,51 +33,75 @@ def sendEmailInfo(receiver):
     message['Subject'] = Header('健康问卷打卡', 'utf-8')
     try:
         stmp.sendmail(sender, receiver, message.as_string())
-        print ("邮件发送成功")
+        print ("通知邮件已发送")
     except smtplib.SMTPException:
         print ("Error: 无法发送邮件")
 
 #定时任务
 scheduler = BlockingScheduler()
 
-#签到
-@scheduler.scheduled_job('cron',day_of_week='*', hour=9, minute='00')
-def checkIn():
-    print("开始登记")
+#逐个打卡
+@scheduler.scheduled_job('cron',day_of_week='*', hour=14, minute='00')
+def check():
+    print("今日开始打卡")
     for account in accounts:
-        # 打开登录窗口
-        chrome_options = Options()
-        chrome_options.add_argument('--headless')
-        driver = webdriver.Chrome(options=chrome_options)
-        driver.get("https://stuhealth.jnu.edu.cn/#/login")
-        # 打开健康问卷
-        driver.find_element_by_id("zh").clear()
-        driver.find_element_by_id("passw").clear()
-        driver.find_element_by_id("zh").send_keys(str(account['userId']))
-        driver.find_element_by_id("passw").send_keys(account['password'])
-        driver.find_element_by_xpath("//button[text()='登录']").click()
+        checkProcess(account)
+    print("今日打卡已完成")
+
+#打卡过程
+def checkProcess(account):
+    # 打开登录窗口
+    chrome_options = Options()
+    chrome_options.add_argument('--headless')
+    driver = webdriver.Chrome(options=chrome_options)
+    driver.get("https://stuhealth.jnu.edu.cn/#/login")
+    # 打开健康问卷
+    driver.find_element_by_id("zh").clear()
+    driver.find_element_by_id("passw").clear()
+    driver.find_element_by_id("zh").send_keys(str(account['userId']))
+    driver.find_element_by_id("passw").send_keys(account['password'])
+    driver.find_element_by_xpath("//button[text()='登录']").click()
+    sleep(1)
+    if driver.current_url == "https://stuhealth.jnu.edu.cn/#/index/complete":
+        print("账户" + account['userId'] + "打卡完成")
+        sendEmailInfo(account['email'])
+        driver.quit()
+        return
+    else:
+        # 填写问卷
+        province = driver.find_element_by_id("selectProvinceJtzz")
         sleep(1)
-        if driver.current_url == "https://stuhealth.jnu.edu.cn/#/index/complete":
-            print("登记完成")
-            sendEmailInfo(account['email'])
-            driver.quit()
-            return
-        else:
-            # 填写问卷
-            province = driver.find_element_by_id("selectProvinceJtzz")
-            sleep(1)
-            Select(province).select_by_visible_text(account["province"])
-            city = driver.find_element_by_id("selectCityJtzz")
-            sleep(1)
-            Select(city).select_by_visible_text(account["city"])
-            street = driver.find_element_by_id("selectDistrictJtzz")
-            sleep(1)
-            Select(street).select_by_visible_text(account["street"])
-            driver.find_element_by_id("10000").click()
-            driver.find_element_by_id("tj").click()
-            driver.quit()
-            #防止签到不成功,重新检查签到
-            checkIn()
+        Select(province).select_by_visible_text(account["province"])
+        city = driver.find_element_by_id("selectCityJtzz")
+        sleep(1)
+        Select(city).select_by_visible_text(account["city"])
+        street = driver.find_element_by_id("selectDistrictJtzz")
+        sleep(1)
+        Select(street).select_by_visible_text(account["street"])
+        driver.find_element_by_id("10000").click()
+        driver.find_element_by_id("tj").click()
+        driver.quit()
+        # 防止签到不成功,重新检查签到
+        checkProcess(account)
+
+# def checkExist(account):
+#     chrome_options = Options()
+#     chrome_options.add_argument('--headless')
+#     driver = webdriver.Chrome(options=chrome_options)
+#     driver.get("https://stuhealth.jnu.edu.cn/#/login")
+#     # 打开健康问卷
+#     driver.find_element_by_id("zh").clear()
+#     driver.find_element_by_id("passw").clear()
+#     driver.find_element_by_id("zh").send_keys(str(account['userId']))
+#     driver.find_element_by_id("passw").send_keys(account['password'])
+#     driver.find_element_by_xpath("//button[text()='登录']").click()
+#     str = driver.current_url
+#     driver.quit()
+#     sleep(1)
+#     if str == "https://stuhealth.jnu.edu.cn/#/index/complete":
+#         return True
+#     else:
+#         return False
 
 if __name__ == "__main__":
     scheduler.start()

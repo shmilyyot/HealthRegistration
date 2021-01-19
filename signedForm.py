@@ -22,7 +22,7 @@ with open("accounts.json") as load_f:
 #发送邮件通知
 sender = "xxx@qq.com"
 def sendEmailInfo(receiver):
-    qqCode = 'opabkobjzcaobfje'  # 授权码（这个要填自己获取到的）
+    qqCode = 'xxx'
     smtp_server = 'smtp.qq.com'
     smtp_port = 465
     stmp = smtplib.SMTP_SSL(smtp_server, smtp_port)

@@ -20,8 +20,13 @@ with open("accounts.json") as load_f:
 def sendEmailInfo():
     pass
 
+#定时任务
+scheduler = BlockingScheduler()
+
 #签到
+@scheduler.scheduled_job('cron',day_of_week='*', hour=9, minute='00')
 def checkIn():
+    print("开始登记")
     for account in accounts:
         # 打开登录窗口
         chrome_options = Options()
@@ -35,7 +40,7 @@ def checkIn():
         driver.find_element_by_id("passw").send_keys(account['password'])
         driver.find_element_by_xpath("//button[text()='登录']").click()
         sleep(1)
-        if driver.current_url =="https://stuhealth.jnu.edu.cn/#/index/complete":
+        if driver.current_url == "https://stuhealth.jnu.edu.cn/#/index/complete":
             print("登记完成")
             sendEmailInfo()
             return
@@ -57,6 +62,4 @@ def checkIn():
             checkIn()
 
 if __name__ == "__main__":
-    scheduler = BlockingScheduler()
-    scheduler.add_job(checkIn(), 'cron', day_of_week='1-7', hour=22, minute=18)
     scheduler.start()

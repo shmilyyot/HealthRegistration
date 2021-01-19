@@ -80,9 +80,14 @@ def checkProcess(account):
         Select(street).select_by_visible_text(account["street"])
         driver.find_element_by_id("10000").click()
         driver.find_element_by_id("tj").click()
-        driver.quit()
-        # 防止签到不成功,重新检查签到
-        checkProcess(account)
+        sleep(1)
+        # 防止签到不成功
+        if(driver.current_url == "https://stuhealth.jnu.edu.cn/#/index/complete"):
+            print("账户" + account['userId'] + "打卡完成")
+            sendEmailInfo(account['email'])
+            driver.quit()
+        else:
+            checkProcess(account)
 
 # def checkExist(account):
 #     chrome_options = Options()

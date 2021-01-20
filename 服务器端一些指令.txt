@@ -1,0 +1,2 @@
+nohup python3 -u signedForm.py >> signedForm.log 2>&1 &
+ps -ef | grep python3

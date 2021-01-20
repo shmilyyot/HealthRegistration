@@ -10,9 +10,9 @@ import json
 
 #添加账户信息
 def addAccount():
-    accounts = [{"userId": "202034261024", "password": "Lovecs456","province":"广东省","city":"东莞市","street":"请选择","email":"toy947115926@hotmail.com"}
-                ,{"userId": "202034261258", "password": "970618.lzl","province":"宁夏回族自治区","city":"吴忠市","street":"同心县","email":"1450958454@qq.com"}
-                ,{"userId": "202034261227", "password": "imjon2K709394","province":"广东省","city":"中山市","street":"请选择","email":"739630749@qq.com"}]
+    accounts = [{"userId": "xxx", "password": "xxx","province":"广东省","city":"东莞市","street":"请选择","email":"xxx@hotmail.com"}
+                ,{"userId": "xxx", "password": "xxx","province":"xxx","city":"xxx","street":"xxx","email":"xxx@qq.com"}
+                ,{"userId": "xxx", "password": "xxx","province":"xxx","city":"xxx","street":"请选择","email":"xxx@qq.com"}]
     with open("accounts.json", mode='w') as load_f:
         json.dump(accounts, load_f, sort_keys=True, indent=2)
 
@@ -21,9 +21,9 @@ with open("accounts.json") as load_f:
     accounts = json.load(load_f)
 
 #发送邮件通知
-sender = "947115926@qq.com"
+sender = "xxx@qq.com"
 def sendEmailInfo(receiver):
-    qqCode = 'opabkobjzcaobfje'
+    qqCode = 'xxx'
     smtp_server = 'smtp.qq.com'
     smtp_port = 465
     stmp = smtplib.SMTP_SSL(smtp_server, smtp_port)
@@ -53,8 +53,12 @@ def check():
 def checkProcess(account):
     # 打开登录窗口
     chrome_options = Options()
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--disable-dev-shm-usage')
     chrome_options.add_argument('--headless')
     driver = webdriver.Chrome(options=chrome_options)
+    #在linux部署时chromedriver的路径
+    #driver = webdriver.Chrome(options=chrome_options, executable_path='/opt/google/chrome/chromedriver')
     driver.get("https://stuhealth.jnu.edu.cn/#/login")
     # 打开健康问卷
     driver.find_element_by_id("zh").clear()
@@ -92,6 +96,8 @@ def checkProcess(account):
 
 # def checkExist(account):
 #     chrome_options = Options()
+#     chrome_options.add_argument('--no-sandbox')
+#     chrome_options.add_argument('--disable-dev-shm-usage')
 #     chrome_options.add_argument('--headless')
 #     driver = webdriver.Chrome(options=chrome_options)
 #     driver.get("https://stuhealth.jnu.edu.cn/#/login")

@@ -8,12 +8,13 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 import smtplib
 import json
 
-# #添加账户信息
-# def addAccount():
-#     accounts = [{"userId": "xxx", "password": "xxx","province":"广东省","city":"东莞市","street":"请选择","email":"xxx@hotmail.com"}]
-#     with open("accounts.json", mode='w') as load_f:
-#         json.dump(accounts, load_f, sort_keys=True, indent=2)
-# addAccount()
+#添加账户信息
+def addAccount():
+    accounts = [{"userId": "202034261024", "password": "Lovecs456","province":"广东省","city":"东莞市","street":"请选择","email":"toy947115926@hotmail.com"}
+                ,{"userId": "202034261258", "password": "970618.lzl","province":"宁夏回族自治区","city":"吴忠市","street":"同心县","email":"1450958454@qq.com"}
+                ,{"userId": "202034261227", "password": "imjon2K709394","province":"广东省","city":"中山市","street":"请选择","email":"739630749@qq.com"}]
+    with open("accounts.json", mode='w') as load_f:
+        json.dump(accounts, load_f, sort_keys=True, indent=2)
 
 #加载配置文件
 with open("accounts.json") as load_f:
@@ -109,4 +110,5 @@ def checkProcess(account):
 #         return False
 
 if __name__ == "__main__":
+    # addAccount()
     scheduler.start()
